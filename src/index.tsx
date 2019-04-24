@@ -1,20 +1,20 @@
-import * as React from 'react';
 import GanttJS from 'frappe-gantt';
-import {bind, clear} from 'size-sensor';
+import * as React from 'react';
+import { bind, clear } from 'size-sensor';
 
-export const noop = () => {
+export const noop = () => {/**/
 };
 
 export default class ReactGantt extends React.Component<any, any> {
-    ganttRef = undefined;
-    ganttInst = undefined;
+    ganttRef: SVGElement | null = null;
+    ganttInst: GanttJS | null = null;
 
     componentDidMount() {
         this.renderFrappeGanttDOM();
-    };
+    }
 
     // redraw the gantt when update. now change the viewMode
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps: any, prevState: any) {
         if (this.ganttInst) {
             this.ganttInst.refresh(this.props.tasks);
             if (this.props.viewMode !== prevProps.viewMode) {
@@ -24,7 +24,7 @@ export default class ReactGantt extends React.Component<any, any> {
     }
 
     componentWillUnmount() {
-        clear(this.ganttRef);
+        clear(this.ganttRef as Element as HTMLElement); // hack to get around not-so-correct types
     }
 
     /**
@@ -34,7 +34,9 @@ export default class ReactGantt extends React.Component<any, any> {
     renderFrappeGanttDOM() {
         // init the Gantt
         // if exist, return
-        if (this.ganttInst) return this.ganttInst;
+        if (this.ganttInst) {
+            return this.ganttInst;
+        }
 
         const {
             onClick,
@@ -47,30 +49,29 @@ export default class ReactGantt extends React.Component<any, any> {
         } = this.props;
 
         // when resize
-        bind(this.ganttRef, () => {
-            if (this.ganttInst) {
-                this.ganttInst.refresh(this.props.tasks);
-            }
-        });
+        bind(this.ganttRef as Element as HTMLElement, // hack to get around not-so-correct types
+            () => {
+                if (this.ganttInst) {
+                    this.ganttInst.refresh(this.props.tasks);
+                }
+            });
 
         // new instance
-        this.ganttInst = new GanttJS(this.ganttRef, tasks, {
-            on_click: onClick || noop,
-            on_date_change: onDateChange || noop,
-            on_progress_change: onProgressChange || noop,
-            on_view_change: onViewChange || noop,
-            custom_popup_html: customPopupHtml || null
+        this.ganttInst = new GanttJS(this.ganttRef!, tasks, {
+            // on_click: onClick || noop,
+            // on_date_change: onDateChange || noop,
+            // on_progress_change: onProgressChange || noop,
+            // on_view_change: onViewChange || noop,
+            // custom_popup_html: customPopupHtml || null,
         });
         // change view mode
-        this.ganttInst.change_view_mode(viewMode);
+        this.ganttInst!.change_view_mode(viewMode);
         return this.ganttInst;
-    };
+    }
 
     render() {
         return (
-            <svg ref={node => {
-                this.ganttRef = node;
-            }}/>
+            <svg ref={(node) => {this.ganttRef = node; }}/>
         );
     }
-};
+}

@@ -1,0 +1,22 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-react"
+    ],
+    "rules": {
+        "radix": true,
+        "no-var-keyword": true,
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "semicolon": [
+            true,
+            "always",
+            "strict-bound-class-methods"
+        ],
+        "member-access": false,
+        "object-literal-sort-keys": false
+    }
+}

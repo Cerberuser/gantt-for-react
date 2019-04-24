@@ -7,8 +7,8 @@ export interface IProps extends Partial<IOptions> {
 }
 
 export default class ReactGantt extends React.Component<IProps> {
-    ganttRef = React.createRef<SVGSVGElement>();
-    ganttInst: GanttJS | null = null;
+    private ganttRef = React.createRef<SVGSVGElement>();
+    private ganttInst: GanttJS | null = null;
 
     componentDidMount() {
         this.renderFrappeGanttDOM();
@@ -32,11 +32,17 @@ export default class ReactGantt extends React.Component<IProps> {
         }
     }
 
+    render() {
+        return (
+            <svg ref={this.ganttRef}/>
+        );
+    }
+
     /**
      * render the gantt chart
      * @returns {GanttJS}
      */
-    renderFrappeGanttDOM() {
+    private renderFrappeGanttDOM() {
         // init the Gantt
         // if exist, return
         if (this.ganttInst) {
@@ -56,11 +62,5 @@ export default class ReactGantt extends React.Component<IProps> {
         // new instance
         this.ganttInst = new GanttJS(this.ganttRef.current!, tasks, innerProps);
         return this.ganttInst;
-    }
-
-    render() {
-        return (
-            <svg ref={this.ganttRef}/>
-        );
     }
 }

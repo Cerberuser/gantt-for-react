@@ -1,12 +1,13 @@
-import GanttJS from 'frappe-gantt';
+import GanttJS, { IOptions, ITask } from 'frappe-gantt';
 import * as React from 'react';
 import { bind, clear } from 'size-sensor';
 
-export const noop = () => {/**/
-};
+export interface IProps extends Partial<IOptions> {
+    tasks: ITask[];
+}
 
-export default class ReactGantt extends React.Component<any, any> {
-    ganttRef: SVGElement | null = null;
+export default class ReactGantt extends React.Component<IProps> {
+    ganttRef = React.createRef<SVGSVGElement>();
     ganttInst: GanttJS | null = null;
 
     componentDidMount() {
@@ -14,17 +15,21 @@ export default class ReactGantt extends React.Component<any, any> {
     }
 
     // redraw the gantt when update. now change the viewMode
-    componentDidUpdate(prevProps: any, prevState: any) {
+    componentDidUpdate(prevProps: IProps) {
         if (this.ganttInst) {
             this.ganttInst.refresh(this.props.tasks);
-            if (this.props.viewMode !== prevProps.viewMode) {
-                this.ganttInst.change_view_mode(this.props.viewMode);
+            if (this.props.view_mode && this.props.view_mode !== prevProps.view_mode) {
+                this.ganttInst.change_view_mode(this.props.view_mode);
             }
+        } else if (this.ganttRef.current) {
+            this.renderFrappeGanttDOM();
         }
     }
 
     componentWillUnmount() {
-        clear(this.ganttRef as Element as HTMLElement); // hack to get around not-so-correct types
+        if (this.ganttRef.current) {
+            clear(this.ganttRef.current as Element as HTMLElement); // hack to get around not-so-correct types
+        }
     }
 
     /**
@@ -38,18 +43,10 @@ export default class ReactGantt extends React.Component<any, any> {
             return this.ganttInst;
         }
 
-        const {
-            onClick,
-            onDateChange,
-            onProgressChange,
-            onViewChange,
-            customPopupHtml,
-            tasks,
-            viewMode,
-        } = this.props;
+        const {tasks, ...innerProps} = this.props;
 
         // when resize
-        bind(this.ganttRef as Element as HTMLElement, // hack to get around not-so-correct types
+        bind(this.ganttRef.current as Element as HTMLElement, // hack to get around not-so-correct types
             () => {
                 if (this.ganttInst) {
                     this.ganttInst.refresh(this.props.tasks);
@@ -57,21 +54,13 @@ export default class ReactGantt extends React.Component<any, any> {
             });
 
         // new instance
-        this.ganttInst = new GanttJS(this.ganttRef!, tasks, {
-            // on_click: onClick || noop,
-            // on_date_change: onDateChange || noop,
-            // on_progress_change: onProgressChange || noop,
-            // on_view_change: onViewChange || noop,
-            // custom_popup_html: customPopupHtml || null,
-        });
-        // change view mode
-        this.ganttInst!.change_view_mode(viewMode);
+        this.ganttInst = new GanttJS(this.ganttRef.current!, tasks, innerProps);
         return this.ganttInst;
     }
 
     render() {
         return (
-            <svg ref={(node) => {this.ganttRef = node; }}/>
+            <svg ref={this.ganttRef}/>
         );
     }
 }

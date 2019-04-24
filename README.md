@@ -10,24 +10,24 @@
 # 1. Install
 
 ```sh
-npm install --save gantt-for-react
+npm install --save gantt-for-react-typescript
 ```
 
 
 # 2. Usage
 
 ```jsx
-import React from 'react';
-import ReactGantt from 'gantt-for-react';
+import * as React from 'react';
+import ReactGantt from 'gantt-for-react-typescript';
 
 <ReactGantt
   tasks={this.getTasks()}
-  viewMode={this.state.viewMode}
-  onClick={this._func}
-  onDateChange={this._func}
-  onProgressChange={this._func}
-  onViewChange={this._func}
-  customPopupHtml={this._html_func}
+  view_mode={this.state.viewMode}
+  on_click={this._func}
+  on_date_change={this._func}
+  on_progress_change={this._func}
+  on_view_change={this._func}
+  custom_popup_html={this._html_func}
 />
 ```
 

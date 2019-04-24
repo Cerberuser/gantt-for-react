@@ -1,6 +1,6 @@
 {
     "name": "gantt-for-react-typescript",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "description": "Frappe Gantt components for React wrapper.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

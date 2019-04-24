@@ -33,4 +33,4 @@ import ReactGantt from 'gantt-for-react';
 
 # 3. LICENSE
 
-MIT @[hustcc](https://github.com/hustcc)
+MIT
